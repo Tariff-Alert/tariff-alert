@@ -1,0 +1,25 @@
+name: Dump fetch JSON
+
+on:
+  push:
+    paths:
+      - ".github/workflows/dump-fetch.yml"
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read local fetch JSON and dump to run log
+        run: |
+          # This workflow only makes sense on a runner with access to the NUC.
+          # A GitHub-hosted runner CANNOT read /Users/yang/projects/... so this
+          # will always report MISSING here — placeholder for a self-hosted
+          # runner experiment.
+          if [ -f /Users/yang/projects/tariff-alert/data/latest_fetch.json ]; then
+            echo "=== FETCH_JSON_BEGIN ==="
+            cat /Users/yang/projects/tariff-alert/data/latest_fetch.json
+            echo "=== FETCH_JSON_END ==="
+          else
+            echo "MISSING /Users/yang/projects/tariff-alert/data/latest_fetch.json"
+          fi
