@@ -1,21 +1,23 @@
 {
-  "run_at": "2026-10-07T06:05:00-04:00",
-  "source_run_at": "2026-10-07T06:00:49-04:00",
+  "run_at": "2026-10-08T06:05:00-04:00",
+  "source_run_at": "2026-10-08T06:00:48-04:00",
   "send": false,
-  "subject": "Tariff Alert daily digest skipped - scoring stage could not read fetch output (2026-10-07)",
-  "summary": "No digest sent today. The upstream fetch stage (job 029ec0ccb44f, 06:00 ET) reported 3 new relevant Federal Register documents, but the scoring stage could not read data/latest_fetch.json: the project data directory is outside the cron sandbox's filesystem permissions, and all alternate read routes (GitHub repo, local-file parsing) were unavailable. Items were not scored and no alert is being sent rather than risk an unverified or duplicated digest to subscribers.",
+  "subject": "Tariff Alert daily digest skipped - scoring stage could not read fetch output (2026-10-08)",
+  "summary": "No digest sent today. The upstream fetch stage (job 029ec0ccb44f, 06:00 ET) reported 12 relevant new Federal Register documents from 15 new documents, but the scoring stage could not read data/latest_fetch.json: the project data directory is outside the cron sandbox's filesystem permissions, the GitHub repo holds no fetch mirror, and the Federal Register API could not be queried directly (firecrawl credits exhausted, no other URL-fetch tool available). Items were not scored and no alert is being sent rather than risk an unverified or duplicated digest to subscribers.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
-    "new_doc_count": 3,
-    "relevant_doc_count": 0,
+    "new_doc_count": 15,
+    "relevant_doc_count": 12,
     "high_priority_count": 0
   },
   "notes": [
-    "Upstream fetch reported 3 relevant new documents from 3 new documents, but their titles and abstracts could not be retrieved for scoring this run.",
-    "Blocker: /Users/yang/projects/tariff-alert/data is outside the filesystem MCP allowed directories in the cron runtime; GitHub mirror of data/ did not previously exist and firecrawl local parsing was unavailable.",
+    "counts.new_doc_count and counts.relevant_doc_count are the fetch stage's own reported figures (12 relevant from 15 new); no documents were scored by this stage, so high_priority and low_priority are empty.",
+    "Blocker: /Users/yang/projects/tariff-alert/data is outside the cron filesystem MCP allowed directories (/Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp). Same blocker as the 2026-10-07 run.",
+    "Alternate read routes attempted and unavailable: GitHub repo data/ mirror (fetch file not committed there), Federal Register API direct query (firecrawl out of credits; no other general URL-fetch tool in this runtime).",
     "run_at is approximate (cron pipeline slot 06:05 ET); source_run_at is from the fetch stage output.",
-    "Fix for future runs: grant the cron filesystem access to the project data directory, or have the fetch stage also commit latest_fetch.json to the repo so scoring can read it.",
-    "No documents were scored this run, so nothing was marked seen for the digest; the next successful scoring run should re-evaluate today's fetch window."
+    "Standing fix options: grant the cron filesystem access to ~/projects/tariff-alert/data, or have the fetch stage commit latest_fetch.json to the repo so scoring can read it. Until one lands, scoring runs will keep emitting send=false.",
+    "Digest written to the GitHub repo mirror because the local data/ path is unwritable from this sandbox; the delivery stage will find no updated local file for this run.",
+    "No documents were scored this run, so nothing was marked seen for the digest; the next successful scoring run should re-evaluate this fetch window."
   ]
 }
