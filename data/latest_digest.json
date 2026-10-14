@@ -1,24 +1,21 @@
 {
-  "run_at": "2026-10-13T06:05:00-04:00",
-  "source_run_at": "2026-10-13T06:00:43-04:00",
+  "run_at": "2026-10-16T06:05:00-04:00",
+  "source_run_at": "2026-10-14T06:00:42-04:00",
   "send": false,
-  "subject": "Tariff Alert daily digest skipped - fetch reported 2 relevant docs but scoring stage could not read the fetch data (2026-10-13)",
-  "summary": "No digest sent today. The upstream fetch stage (job 029ec0ccb44f, 06:00:43 ET) reported 2 relevant new documents from 3 new documents scanned, but the scoring stage could not read data/latest_fetch.json to score its contents: the project data directory is outside the cron sandbox's filesystem permissions, the GitHub repo holds no fetch mirror (only latest_digest.json is committed), and an independent Federal Register API check was impossible because firecrawl credits remain exhausted (402 on scrape and search this run). Rather than invent document details that were never observed, no alert is being sent and the fetch window stays re-evaluable.",
+  "subject": "Tariff Alert: no digest sent - scoring stage could not read fetch data",
+  "summary": "No alert is being sent. The Oct 14 fetch stage (job 029ec0ccb44f) reported 13 new documents, 10 relevant, but its output file data/latest_fetch.json was unreachable from the scoring stage: the path is outside the cron filesystem sandbox, it was not committed to this repo mirror, and the Firecrawl fallback is returning HTTP 402 (credit exhaustion, third consecutive day). With no document content available, no items could be scored and none are invented. The Federal Register seen-set was not advanced upstream, so once fetch data becomes reachable the full Oct 14 window can still be scored and delivered.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
-    "new_doc_count": 3,
-    "relevant_doc_count": 2,
+    "new_doc_count": 13,
+    "relevant_doc_count": 10,
     "high_priority_count": 0
   },
   "notes": [
-    "Fetch stage output quoted verbatim: '2 relevant new document(s) from 3 new doc(s).' The fetch stage already deduplicated against seen_documents.json, so these are genuinely new documents - but their titles, document numbers and content were never visible to this stage and are NOT reproduced here.",
-    "This is the first run since 2026-10-06 where the fetch stage reported relevant documents (Oct 7/8/9 and Oct 12 all reported zeros), so today's undelivered content is potentially real subscriber value being lost to the tooling gap, not just a quiet-day false alarm.",
-    "Blocker: /Users/yang/projects/tariff-alert/data is outside the cron filesystem MCP allowed directories (/Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp). Same blocker as the 2026-10-07 through 2026-10-12 runs.",
-    "Alternate read routes attempted this run: GitHub repo data/ directory (no latest_fetch.json there, only latest_digest.json), firecrawl_scrape and firecrawl_search against the Federal Register API (both 402 insufficient credits).",
-    "Because nothing was scored, seen_documents.json was not advanced by this stage; the next successful scoring run should re-evaluate this fetch window.",
-    "run_at is approximate (cron pipeline slot 06:05 ET); source_run_at is from the fetch stage output.",
-    "Standing fixes that would unblock this stage: grant the cron filesystem access to ~/projects/tariff-alert/data, have the fetch stage commit latest_fetch.json to the repo, or top up firecrawl credits so the FR API can be queried directly.",
-    "Digest written to the GitHub repo mirror because the local data/ path is unwritable from this sandbox; the local delivery stage will find no updated local file for this run (moot today since send=false)."
+    "Upstream fetch job 029ec0ccb44f succeeded at 2026-10-14 06:00:42; counts (13 new / 10 relevant) are taken from its stdout summary only.",
+    "latest_fetch.json is not present in the GitHub mirror under data/ - only latest_digest.json (sha 48df3867) exists there.",
+    "Firecrawl probe on 2026-10-16 returned HTTP 402; scrape/search fallback unavailable.",
+    "send=false per rule: missing or unreadable fetch input must never produce fabricated scored items.",
+    "Standing fixes: grant the cron stage read/write access to ~/projects/tariff-alert/data, have the fetch stage commit latest_fetch.json to this repo, or top up the Firecrawl plan."
   ]
 }
