@@ -1,21 +1,21 @@
 {
-  "run_at": "2026-10-16T06:05:00-04:00",
+  "run_at": "2026-10-14T06:30:00-04:00",
   "source_run_at": "2026-10-14T06:00:42-04:00",
   "send": false,
-  "subject": "Tariff Alert: no digest sent - scoring stage could not read fetch data",
-  "summary": "No alert is being sent. The Oct 14 fetch stage (job 029ec0ccb44f) reported 13 new documents, 10 relevant, but its output file data/latest_fetch.json was unreachable from the scoring stage: the path is outside the cron filesystem sandbox, it was not committed to this repo mirror, and the Firecrawl fallback is returning HTTP 402 (credit exhaustion, third consecutive day). With no document content available, no items could be scored and none are invented. The Federal Register seen-set was not advanced upstream, so once fetch data becomes reachable the full Oct 14 window can still be scored and delivered.",
+  "subject": "Tariff Alert - no digest sent (scoring stage blocked from fetch data)",
+  "summary": "No alert sent. The upstream fetch stage reported 10 relevant new documents from 13 new Federal Register documents on 2026-10-14 06:00 ET, but the scoring stage could not read data/latest_fetch.json (runtime sandbox has no access to the project data directory and no shell), so no items could be scored. Firecrawl credits are exhausted (HTTP 402), blocking the direct Federal Register API fallback. The 2026-10-14 document window remains unprocessed.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
     "new_doc_count": 13,
-    "relevant_doc_count": 10,
+    "relevant_doc_count": 0,
     "high_priority_count": 0
   },
   "notes": [
-    "Upstream fetch job 029ec0ccb44f succeeded at 2026-10-14 06:00:42; counts (13 new / 10 relevant) are taken from its stdout summary only.",
-    "latest_fetch.json is not present in the GitHub mirror under data/ - only latest_digest.json (sha 48df3867) exists there.",
-    "Firecrawl probe on 2026-10-16 returned HTTP 402; scrape/search fallback unavailable.",
-    "send=false per rule: missing or unreadable fetch input must never produce fabricated scored items.",
-    "Standing fixes: grant the cron stage read/write access to ~/projects/tariff-alert/data, have the fetch stage commit latest_fetch.json to this repo, or top up the Firecrawl plan."
+    "latest_fetch.json not readable from the scoring runtime: local data/ directory is outside the filesystem sandbox and cron has no terminal/execute_code. Fetch stage output (job 029ec0ccb44f) confirmed 10 relevant of 13 new docs for 2026-10-14.",
+    "Firecrawl credits exhausted (HTTP 402) - both search and a direct federalregister.gov API fallback scrape were rejected.",
+    "relevant_doc_count is 0 here because zero documents could be read and scored, not because the 10 relevant fetch items were evaluated and rejected; they stay queued for re-evaluation.",
+    "Fix options unchanged: fetch stage commits data/latest_fetch.json to this repo after each run, or firecrawl plan is topped up.",
+    "run_at timestamp approximate - cron runtime has no clock-reading tool."
   ]
 }
