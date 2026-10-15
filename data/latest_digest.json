@@ -1,21 +1,22 @@
 {
-  "run_at": "2026-10-14T06:30:00-04:00",
-  "source_run_at": "2026-10-14T06:00:42-04:00",
+  "run_at": "2026-10-15T06:30:00-04:00",
+  "source_run_at": "2026-10-15T06:00:42-04:00",
   "send": false,
-  "subject": "Tariff Alert - no digest sent (scoring stage blocked from fetch data)",
-  "summary": "No alert sent. The upstream fetch stage reported 10 relevant new documents from 13 new Federal Register documents on 2026-10-14 06:00 ET, but the scoring stage could not read data/latest_fetch.json (runtime sandbox has no access to the project data directory and no shell), so no items could be scored. Firecrawl credits are exhausted (HTTP 402), blocking the direct Federal Register API fallback. The 2026-10-14 document window remains unprocessed.",
+  "subject": "Tariff Alert - no digest sent (fetch data still unreadable, firecrawl still out of credits)",
+  "summary": "No alert sent. The 2026-10-15 fetch stage (job 029ec0ccb44f) reported 5 relevant new documents from 6 new Federal Register documents, but the scoring stage could not read data/latest_fetch.json (the runtime sandbox has no access to the project data directory and no shell), so no items could be scored. The GitHub mirror of data/latest_fetch.json is also absent, and the direct Federal Register API fallback is still blocked by exhausted Firecrawl credits (HTTP 402). The 2026-10-15 document window remains unprocessed.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
-    "new_doc_count": 13,
+    "new_doc_count": 6,
     "relevant_doc_count": 0,
     "high_priority_count": 0
   },
   "notes": [
-    "latest_fetch.json not readable from the scoring runtime: local data/ directory is outside the filesystem sandbox and cron has no terminal/execute_code. Fetch stage output (job 029ec0ccb44f) confirmed 10 relevant of 13 new docs for 2026-10-14.",
-    "Firecrawl credits exhausted (HTTP 402) - both search and a direct federalregister.gov API fallback scrape were rejected.",
-    "relevant_doc_count is 0 here because zero documents could be read and scored, not because the 10 relevant fetch items were evaluated and rejected; they stay queued for re-evaluation.",
-    "Fix options unchanged: fetch stage commits data/latest_fetch.json to this repo after each run, or firecrawl plan is topped up.",
-    "run_at timestamp approximate - cron runtime has no clock-reading tool."
+    "latest_fetch.json is not readable from the scoring runtime: local data/ directory is outside the filesystem sandbox and cron has no terminal/execute_code.",
+    "GitHub fallback also blocked: data/latest_fetch.json is not committed to Tariff-Alert/tariff-alert (data/ contains only latest_digest.json), so there is no mirror to read.",
+    "Federal Register API fallback rejected with Firecrawl HTTP 402 Insufficient credits - unchanged from Oct 13-16.",
+    "relevant_doc_count is 0 because zero documents could be read and scored, not because the 5 relevant fetch items were evaluated and rejected; they stay queued for re-evaluation.",
+    "Fix options unchanged: fetch stage commits data/latest_fetch.json to this repo after each run, or the Firecrawl plan is topped up.",
+    "run_at timestamp is approximate - the cron runtime has no clock-reading tool; date/time inherited from the fetch job's own reported run time (2026-10-15 06:00:42)."
   ]
 }
