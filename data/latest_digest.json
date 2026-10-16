@@ -1,20 +1,21 @@
 {
-  "run_at": "2026-10-15T06:30:00-04:00",
-  "source_run_at": "2026-10-15T06:00:42-04:00",
+  "run_at": "2026-10-16T06:00:29-04:00",
+  "source_run_at": "2026-10-16T06:00:29-04:00",
   "send": false,
-  "subject": "Tariff Alert - no digest sent (fetch output remains unreadable, firecrawl credits still exhausted)",
-  "summary": "No alert sent. The 2026-10-15 fetch stage (job 029ec0ccb44f) reported 5 relevant new documents from 6 new Federal Register documents, but the scoring stage still cannot read data/latest_fetch.json: the local data/ directory is outside the scoring runtime's sandbox and the runtime has no shell. The GitHub mirror contains no latest_fetch.json to fall back on, and the direct Federal Register API route is blocked by Firecrawl HTTP 402 (insufficient credits), re-confirmed this run. The 2026-10-15 document window remains unprocessed.",
+  "subject": "Tariff Alert - no digest sent (fetch output unreadable, Oct 15-16 items queued)",
+  "summary": "No alert sent. The 2026-10-16 fetch stage (job 029ec0ccb44f) reported 2 relevant new documents from 4 new Federal Register documents, but the scoring stage cannot read data/latest_fetch.json: the local data/ directory is outside the scoring runtime's sandbox and the runtime has no shell. The GitHub mirror contains no latest_fetch.json, and the direct Federal Register API fallback is still blocked by Firecrawl HTTP 402 (insufficient credits), re-probed once this run. Together with the unprocessed 2026-10-15 window (5 relevant docs of 6), 7 relevant documents remain queued and unscored across two days.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
-    "new_doc_count": 6,
+    "new_doc_count": 4,
     "relevant_doc_count": 0,
     "high_priority_count": 0
   },
   "notes": [
-    "relevant_doc_count is 0 because zero documents could be read and scored, not because the 5 relevant items were evaluated and rejected; they stay queued for the next readable window.",
-    "Firecrawl scrape probe against the Federal Register API returned 402 Insufficient credits on this run (single probe, no retries burned).",
-    "Fix options unchanged: fetch stage commits data/latest_fetch.json to Tariff-Alert/tariff-alert after each run, sandbox access is granted to ~/projects/tariff-alert/data, or the Firecrawl plan is topped up.",
-    "run_at is approximate: the cron runtime has no clock tool; timestamp inherited from the fetch job's reported run time (2026-10-15 06:00:42)."
+    "relevant_doc_count is 0 because zero documents could be read and scored, not because the 2 relevant items were evaluated and rejected; they join the 5 queued from Oct 15 for the next readable window.",
+    "Firecrawl Federal Register API probe returned 402 Insufficient credits on this run (single probe, no retries burned).",
+    "Digest committed to the GitHub mirror (Tariff-Alert/tariff-alert data/latest_digest.json) because the delivery-stage path is outside the scoring sandbox; this mirrors the validated Oct 15 workaround.",
+    "Fix options unchanged: fetch stage commits data/latest_fetch.json to the repo after each run, sandbox access is granted to ~/projects/tariff-alert/data, or the Firecrawl plan is topped up.",
+    "run_at is approximate: the cron runtime has no clock tool; timestamp inherited from the fetch job's reported run time (2026-10-16 06:00:29)."
   ]
 }
