@@ -1,21 +1,21 @@
 {
-  "run_at": "2026-10-20T06:05:00-04:00",
-  "source_run_at": "2026-10-20T06:00:26-04:00",
+  "run_at": "2026-10-26T06:07:00-04:00",
+  "source_run_at": "2026-10-26T06:01:01-04:00",
   "send": false,
-  "subject": "Tariff Alert Oct 20: scoring stage degraded - no digest generated",
-  "summary": "No alert sent today. The upstream fetch stage reported 3 relevant new documents out of 4 new Federal Register documents, but the scoring stage could not read data/latest_fetch.json (sandbox path restriction) and could not recover the item details through any available channel, so no items could be scored or summarized without fabricating content. Subscribers should not receive an unverified digest; re-run the scoring stage once file access is restored.",
+  "subject": "Tariff Alert Oct 26: scoring stage degraded - no digest generated",
+  "summary": "No alert sent today. The upstream fetch stage reported 11 relevant new documents out of 13 new Federal Register documents, but the scoring stage could not read data/latest_fetch.json (filesystem sandbox path restriction, recurring since Oct 20) and could not recover the item details through any available channel (GitHub mirror does not track the fetch file; Firecrawl out of credits; no local copies under Documents, scripts, or /tmp; no terminal access in cron). No items could be scored or summarized without fabricating content, which is prohibited. Subscribers should not receive an unverified digest. Re-run the scoring stage once file access is restored; the fetch stage's seen-documents dedup means those 11 items are already marked processed, so a fix should also consider whether they can be re-surfaced.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
-    "new_doc_count": 4,
-    "relevant_doc_count": 3,
+    "new_doc_count": 13,
+    "relevant_doc_count": 11,
     "high_priority_count": 0
   },
   "notes": [
-    "DEGRADED RUN: scoring stage could not access /Users/yang/projects/tariff-alert/data/latest_fetch.json - cron filesystem sandbox only allows /Users/yang/Documents, /Users/yang/scripts, /tmp. The project directory is outside the allowlist this run.",
-    "Upstream fetch job 029ec0ccb44f (06:00:26) reported: 3 relevant new documents from 4 new documents, but item titles, document numbers, and URLs were not included in the handoff output and could not be recovered (Firecrawl out of credits; GitHub mirror does not track data/latest_fetch.json).",
-    "send=false is deliberate: no item details were verifiable, and inventing digest content for subscribers is prohibited.",
-    "Fix: widen the cron filesystem allowlist to include /Users/yang/projects, or have the fetch stage copy latest_fetch.json to /tmp or embed item summaries in its job output.",
-    "This file was written to the GitHub mirror (Tariff-Alert/tariff-alert, data/latest_digest.json) because the local write path was also inaccessible; the delivery stage reads the local copy and will see no update locally - it will simply not send today, which matches the send=false intent only if it tolerates a missing/stale digest. Verify delivery-stage behavior on stale digests."
+    "DEGRADED RUN (recurring): scoring stage cannot access /Users/yang/projects/tariff-alert/data/latest_fetch.json - cron filesystem allowlist is /Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp; the project directory is outside it. Same failure occurred Oct 20. Fix: widen the allowlist to include /Users/yang/projects, or have the fetch stage copy latest_fetch.json to /tmp/tariff-alert/ (the /tmp/tariff-alert dir exists but only contains stale probe files from Oct 22) or embed item summaries in the job output.",
+    "Recovery attempts this run: symlink-read probe at /tmp/tariff-alert/latest_fetch_link.txt is a stale plain-text placeholder (created Oct 22, contains probe text, not JSON); GitHub repo Tariff-Alert/tariff-alert has no data/latest_fetch.json (only data/latest_digest.json is mirrored); Firecrawl scrape+parse+search all fail on exhausted credits; no terminal/execute tools in this cron profile; memory knowledge-graph has no fetch copy.",
+    "Upstream fetch job 029ec0ccb44f (2026-10-26 06:01:01) reported 11 relevant new documents from 13 new documents, but the handoff output contains no titles, document numbers, or URLs, so nothing is verifiable.",
+    "send=false is deliberate: inventing digest content for subscribers is prohibited.",
+    "This file was written to the GitHub mirror (Tariff-Alert/tariff-alert, data/latest_digest.json) because the local write path was also inaccessible. The delivery stage reads the local copy and will see no update locally - confirm delivery-stage behavior on stale digests (Oct 20 precedent suggests no send occurs, which matches the send=false intent)."
   ]
 }
