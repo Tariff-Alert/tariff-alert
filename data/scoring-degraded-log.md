@@ -7,3 +7,12 @@
 - send=false written to data/latest_digest.json via GitHub mirror commit (d288618). No items scored or summarized; no content fabricated.
 - The 4 relevant items are already marked processed by fetch-stage dedup and will not re-surface on their own.
 - Standing fix needed: widen allowlist to /Users/yang/projects, or have fetch stage copy latest_fetch.json to /tmp/tariff-alert/, or embed item summaries in the fetch job output.
+
+## 2026-10-29
+- Upstream fetch job 029ec0ccb44f reported 5 relevant new documents out of 6 new Federal Register documents. 4th degraded run (Oct 20, 26, 28, 29).
+- Same root cause: data/latest_fetch.json outside cron filesystem allowlist (/Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp).
+- Recovery attempts: GitHub data/ still has no fetch-file mirror; Firecrawl live-confirmed out of credits (fresh 402-style error this run); /tmp and Documents searches found no copies; no terminal/execute tools.
+- send=false written to data/latest_digest.json via GitHub mirror commit (2978758). No items scored; nothing fabricated.
+- The 5 relevant items are deduped as seen upstream and will not re-surface; each degraded day permanently skips real documents for subscribers.
+- ESCALATED standing fix (any one restores the pipeline): (a) widen cron allowlist to /Users/yang/projects, (b) fetch stage copies latest_fetch.json to /tmp/tariff-alert/latest_fetch.json after each run, (c) fetch job output embeds the full item list (document_number, title, url, abstract).
+- Note: Canada-side stage (job 8c9b7a31ac77) shares the same handoff path; CBSA/Gazette items were equally unrecoverable.
