@@ -1,9 +1,9 @@
 {
-  "run_at": "2026-10-29T06:05:00-04:00",
-  "source_run_at": "2026-10-29T06:00:50-04:00",
+  "run_at": "2026-10-30T06:20:00-04:00",
+  "source_run_at": "2026-10-30T06:00:22-04:00",
   "send": false,
-  "subject": "Tariff Alert Oct 29: scoring stage degraded - no digest generated",
-  "summary": "No alert sent today. The upstream fetch stage reported 5 relevant new documents out of 6 new Federal Register documents, but the scoring stage could not read data/latest_fetch.json (filesystem sandbox path restriction, recurring since Oct 20) and could not recover the item details through any available channel (GitHub mirror does not track the fetch file; Firecrawl out of credits; no local copies under Documents, scripts, or /tmp; no terminal access in cron). No items could be scored or summarized without fabricating content, which is prohibited. Subscribers should not receive an unverified digest. The 5 relevant items are already marked processed by the fetch stage's seen-documents dedup, so a fix should also consider whether they can be re-surfaced.",
+  "subject": "Tariff Alert Oct 30: scoring stage degraded - no digest generated",
+  "summary": "No alert sent today. The upstream fetch stage reported 5 relevant new documents out of 6 new Federal Register documents, but the scoring stage could not read data/latest_fetch.json (filesystem sandbox path restriction, recurring since Oct 20) and no recovery channel was available: GitHub does not mirror the fetch file, Firecrawl is out of credits, /tmp contains only stale probe files, and this cron profile has no terminal access. No items could be scored or summarized without fabricating content, which is prohibited. The 5 relevant items are marked processed by the fetch stage's seen-documents dedup and will not re-surface; any fix should consider whether recent degraded days can be re-surfaced once the pipeline is restored.",
   "high_priority": [],
   "low_priority": [],
   "counts": {
@@ -12,12 +12,12 @@
     "high_priority_count": 0
   },
   "notes": [
-    "DEGRADED RUN (recurring, 4th occurrence: Oct 20, Oct 26, Oct 28, Oct 29): scoring stage cannot access /Users/yang/projects/tariff-alert/data/latest_fetch.json - cron filesystem allowlist is /Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp; the project directory is outside it.",
-    "Recovery attempts this run: GitHub repo Tariff-Alert/tariff-alert data/ directory still contains only latest_digest.json and scoring-degraded-log.md (no latest_fetch.json mirrored); Firecrawl scrape confirmed out of credits (live error this run, not stale memory); /tmp and Documents searches found no fetch-file copies; no terminal/execute tools in this cron profile.",
-    "Upstream fetch job 029ec0ccb44f (2026-10-29 06:00:50) reported 5 relevant new documents from 6 new documents, but the handoff output contains no titles, document numbers, or URLs, so nothing is verifiable.",
+    "DEGRADED RUN (5th occurrence: Oct 20, 26, 28, 29, 30): scoring stage cannot access /Users/yang/projects/tariff-alert/data/latest_fetch.json - cron filesystem allowlist is /Users/yang/Documents, /Users/yang/scripts, /tmp, /private/tmp; the project directory is outside it.",
+    "Recovery attempts this run: /tmp/tariff-alert/ was checked first and contains only stale probe files (digest_probe.txt, latest_fetch_link.txt, data/latest_digest.json from Oct 28); a symlink-based read attempt returned ENOENT (dangling stub); GitHub repo data/ still has no fetch-file mirror; Firecrawl remains out of credits (verified Oct 31 pattern continues); no terminal/execute tools in this cron profile.",
+    "Upstream fetch job 029ec0ccb44f (2026-10-30 06:00:22) reported 5 relevant new documents from 6 new documents, but the handoff output contains no titles, document numbers, or URLs, so nothing is verifiable.",
     "send=false is deliberate: inventing digest content for subscribers is prohibited.",
-    "STANDING FIX REQUIRED (escalated - now blocking ~4 of 7 runs per 2 weeks): either widen the cron filesystem allowlist to include /Users/yang/projects, or modify fetch stage 029ec0ccb44f to copy latest_fetch.json to /tmp/tariff-alert/latest_fetch.json after each run, or embed the full item list (document_number, title, url, abstract) in the fetch job output. Any one of these restores the pipeline. Every missed day means real Federal Register items are deduped as seen and never delivered to subscribers.",
-    "This file written to the GitHub mirror (Tariff-Alert/tariff-alert) because the local write path is also inaccessible; the delivery stage reads the local copy and per Oct 20/26/28 precedent will not send on a stale digest, matching the send=false intent.",
-    "NOTE: fetch stage now also runs a Canada-side stage (job 8c9b7a31ac77, CBSA + Canada Gazette); those items share the same inaccessible handoff path and were also unrecoverable this run."
+    "STANDING FIX REQUIRED (any one restores the pipeline): (a) widen cron allowlist to /Users/yang/projects, (b) fetch stage 029ec0ccb44f copies latest_fetch.json to /tmp/tariff-alert/latest_fetch.json after each run, (c) fetch job output embeds the full item list (document_number, title, url, abstract). Canada-side stage 8c9b7a31ac77 shares the handoff and needs the same treatment.",
+    "This file written to the GitHub mirror (Tariff-Alert/tariff-alert) because the local write path is also inaccessible; the delivery stage reads the local copy and per Oct 20/26/28/29 precedent will not send on a stale digest, matching the send=false intent.",
+    "Canada-side stage (job 8c9b7a31ac77) shares the same inaccessible handoff path; CBSA/Gazette items were equally unrecoverable this run."
   ]
 }
