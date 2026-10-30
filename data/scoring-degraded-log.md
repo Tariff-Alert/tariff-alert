@@ -16,3 +16,11 @@
 - The 5 relevant items are deduped as seen upstream and will not re-surface; each degraded day permanently skips real documents for subscribers.
 - ESCALATED standing fix (any one restores the pipeline): (a) widen cron allowlist to /Users/yang/projects, (b) fetch stage copies latest_fetch.json to /tmp/tariff-alert/latest_fetch.json after each run, (c) fetch job output embeds the full item list (document_number, title, url, abstract).
 - Note: Canada-side stage (job 8c9b7a31ac77) shares the same handoff path; CBSA/Gazette items were equally unrecoverable.
+
+## 2026-10-30
+- Upstream fetch job 029ec0ccb44f reported 5 relevant new documents out of 6 new Federal Register documents. 5th degraded run (Oct 20, 26, 28, 29, 30).
+- Same root cause: data/latest_fetch.json outside cron filesystem allowlist.
+- Recovery attempts: /tmp/tariff-alert/ checked FIRST per standing procedure - only stale probe files present (digest_probe.txt, latest_fetch_link.txt, Oct 28 digest copy); a symlink-read attempt returned ENOENT (dangling stub, not a real handoff); GitHub data/ still has no fetch-file mirror; Firecrawl out of credits; no terminal/execute tools.
+- send=false written to data/latest_digest.json via GitHub mirror commit (cd5395e). No items scored; nothing fabricated.
+- The 5 relevant items are deduped as seen upstream and will not re-surface.
+- The standing fix remains undone and is now blocking the majority of weekday runs. Any ONE of: (a) allowlist /Users/yang/projects, (b) fetch stage copies latest_fetch.json to /tmp/tariff-alert/, (c) fetch output embeds full item list. Canada-side stage 8c9b7a31ac77 shares the handoff and needs the same treatment.
